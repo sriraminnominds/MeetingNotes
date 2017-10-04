@@ -18,9 +18,9 @@ public class MeetingNotesActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_meeting_notes);
 
-        mP2pHelper = new WifiP2PHelper();
-        mP2pHelper.initialiseP2p(this);
-        //loadFragment(R.id.frame_container, new DeviceListFragment());
+        AttendeesListFragment fragment = new AttendeesListFragment();
+        mP2pHelper = new WifiP2PHelper(this, fragment);
+        loadFragment(R.id.frame_container, fragment);
     }
 
 
@@ -52,5 +52,9 @@ public class MeetingNotesActivity extends BaseActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    public WifiP2PHelper getP2pHelper() {
+        return mP2pHelper;
     }
 }

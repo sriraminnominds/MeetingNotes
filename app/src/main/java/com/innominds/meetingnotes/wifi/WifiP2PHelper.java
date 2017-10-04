@@ -23,10 +23,18 @@ public class WifiP2PHelper implements WifiP2pManager.ChannelListener, WifiP2pMan
     private boolean mIsWifiP2pEnabled = false;
     private IntentFilter mIntentFilter;
 
+    private WifiP2pInfo mConnectionInfo;
     private WifiP2pDevice mThisDevice;
     private List<WifiP2pDevice> mPeerDevices = new ArrayList<WifiP2pDevice>();
 
-    public void initialiseP2p(Context context) {
+    private DeviceActionListener mListener;
+
+    public WifiP2PHelper(Context context, DeviceActionListener listener) {
+        this.mListener = listener;
+        initialiseP2p(context);
+    }
+
+    private void initialiseP2p(Context context) {
         mIntentFilter = new IntentFilter();
         mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION);
         mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION);
@@ -40,6 +48,9 @@ public class WifiP2PHelper implements WifiP2pManager.ChannelListener, WifiP2pMan
     @Override
     public void onChannelDisconnected() {
         Log.v(MeetingNotesActivity.TAG, "Channel Disconnected.");
+        if (mListener != null) {
+            mListener.onDisconnect();
+        }
     }
 
     public WifiP2pManager getManager() {
@@ -70,6 +81,10 @@ public class WifiP2PHelper implements WifiP2pManager.ChannelListener, WifiP2pMan
         this.mThisDevice = device;
     }
 
+    public WifiP2pInfo getConnectionInfo() {
+        return mConnectionInfo;
+    }
+
     public void discoverPeers() {
         if (mIsWifiP2pEnabled) {
             mManager.discoverPeers(mChannel, new WifiP2pManager.ActionListener() {
@@ -89,13 +104,29 @@ public class WifiP2PHelper implements WifiP2pManager.ChannelListener, WifiP2pMan
     }
 
     @Override
-    public void onConnectionInfoAvailable(WifiP2pInfo wifiP2pInfo) {
-        Log.v(MeetingNotesActivity.TAG, "Connection Info." + wifiP2pInfo.toString());
+    public void onConnectionInfoAvailable(WifiP2pInfo connectionInfo) {
+        this.mConnectionInfo = connectionInfo;
+        Log.v(MeetingNotesActivity.TAG, "Connection Info." + connectionInfo.toString());
+        if (mListener != null) {
+            mListener.onConnection(mConnectionInfo);
+        }
     }
 
     @Override
     public void onPeersAvailable(WifiP2pDeviceList peerList) {
         mPeerDevices.clear();
         mPeerDevices.addAll(peerList.getDeviceList());
+        Log.v(MeetingNotesActivity.TAG, "Peer List." + peerList.toString());
+        if (mListener != null) {
+            mListener.onPeersAvailable(mPeerDevices);
+        }
+    }
+
+    public interface DeviceActionListener {
+        void onConnection(WifiP2pInfo config);
+
+        void onPeersAvailable(List<WifiP2pDevice> list);
+
+        void onDisconnect();
     }
 }
