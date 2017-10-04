@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">MeetingNotes</string>
+
+    <string name="label_me">ME</string>
+    <string name="label_peers">PEERS</string>
+    <string name="empty_message">No devices found. Turn on P2P and perform discovery from the Action Bar</string>
 </resources>
