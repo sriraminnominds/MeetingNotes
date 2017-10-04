@@ -1,9 +1,42 @@
+# Android
+local.properties
+
+/# Maven
+target/
+
+# Gradle
+.gradle/
+build/
+
+# Ant Working Directory
+.sonar/
+captures/
+
+# IntelliJ IDEA
+*.iws
 *.iml
-.gradle
-/local.properties
-/.idea/workspace.xml
-/.idea/libraries
+*.ipr
+.idea/
+
+# Eclipse
+.classpath
+.project
+.settings
+
+# ---- Mac OS X
 .DS_Store
-/build
-/captures
-.externalNativeBuild
+Icon?
+# Thumbnails
+._*
+# Files that might appear on external disk
+.Spotlight-V100
+.Trashes
+
+# ---- Windows
+# Windows image file caches
+Thumbs.db
+# Folder config file
+Desktop.ini
+.idea/sonarlint/
+app/libs/
+app/src/main/res/drawable/
