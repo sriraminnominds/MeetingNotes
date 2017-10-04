@@ -1,4 +1,4 @@
-package com.innominds.meetingnotes;
+package com.innominds.meetingnotes.wifi;
 
 import android.content.Context;
 import android.content.IntentFilter;
@@ -6,6 +6,9 @@ import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pDeviceList;
 import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
+import android.util.Log;
+
+import com.innominds.meetingnotes.MeetingNotesActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +23,8 @@ public class WifiP2PHelper implements WifiP2pManager.ChannelListener, WifiP2pMan
     private boolean mIsWifiP2pEnabled = false;
     private IntentFilter mIntentFilter;
 
-    private List<WifiP2pDevice> mPeers = new ArrayList<WifiP2pDevice>();
+    private WifiP2pDevice mThisDevice;
+    private List<WifiP2pDevice> mPeerDevices = new ArrayList<WifiP2pDevice>();
 
     public void initialiseP2p(Context context) {
         mIntentFilter = new IntentFilter();
@@ -35,7 +39,7 @@ public class WifiP2PHelper implements WifiP2pManager.ChannelListener, WifiP2pMan
 
     @Override
     public void onChannelDisconnected() {
-
+        Log.v(MeetingNotesActivity.TAG, "Channel Disconnected.");
     }
 
     public WifiP2pManager getManager() {
@@ -46,8 +50,8 @@ public class WifiP2PHelper implements WifiP2pManager.ChannelListener, WifiP2pMan
         return mChannel;
     }
 
-    public List<WifiP2pDevice> getPeers() {
-        return mPeers;
+    public List<WifiP2pDevice> getPeerDevices() {
+        return mPeerDevices;
     }
 
     public IntentFilter getIntentFilter() {
@@ -58,29 +62,40 @@ public class WifiP2PHelper implements WifiP2pManager.ChannelListener, WifiP2pMan
         this.mIsWifiP2pEnabled = enabled;
     }
 
+    public WifiP2pDevice getThisDevice() {
+        return mThisDevice;
+    }
+
+    public void setThisDevice(WifiP2pDevice device) {
+        this.mThisDevice = device;
+    }
+
     public void discoverPeers() {
         if (mIsWifiP2pEnabled) {
             mManager.discoverPeers(mChannel, new WifiP2pManager.ActionListener() {
                 @Override
                 public void onSuccess() {
+                    Log.v(MeetingNotesActivity.TAG, "Discovery Successful.");
                 }
 
                 @Override
                 public void onFailure(int reasonCode) {
+                    Log.v(MeetingNotesActivity.TAG, "Discovery Failed." + reasonCode);
                 }
             });
         } else {
+            Log.v(MeetingNotesActivity.TAG, "P2p is not enabled on this phone.");
         }
     }
 
     @Override
     public void onConnectionInfoAvailable(WifiP2pInfo wifiP2pInfo) {
-
+        Log.v(MeetingNotesActivity.TAG, "Connection Info." + wifiP2pInfo.toString());
     }
 
     @Override
     public void onPeersAvailable(WifiP2pDeviceList peerList) {
-        mPeers.clear();
-        mPeers.addAll(peerList.getDeviceList());
+        mPeerDevices.clear();
+        mPeerDevices.addAll(peerList.getDeviceList());
     }
 }

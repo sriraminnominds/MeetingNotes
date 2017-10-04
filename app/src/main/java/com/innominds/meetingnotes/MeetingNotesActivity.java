@@ -4,20 +4,22 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.innominds.meetingnotes.wifi.WifiBroadcastReceiver;
+import com.innominds.meetingnotes.wifi.WifiP2PHelper;
+
 public class MeetingNotesActivity extends BaseActivity {
     private WifiBroadcastReceiver mReceiver;
-    private WifiP2PHelper mHelper;
+    private WifiP2PHelper mP2pHelper;
 
     public static final String TAG = "MeetingNotesActivity";
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_meeting_notes);
 
-        mHelper = new WifiP2PHelper();
-        mHelper.initialiseP2p(this);
+        mP2pHelper = new WifiP2PHelper();
+        mP2pHelper.initialiseP2p(this);
         //loadFragment(R.id.frame_container, new DeviceListFragment());
     }
 
@@ -25,8 +27,8 @@ public class MeetingNotesActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        mReceiver = new WifiBroadcastReceiver(mHelper);
-        registerReceiver(mReceiver, mHelper.getIntentFilter());
+        mReceiver = new WifiBroadcastReceiver(mP2pHelper);
+        registerReceiver(mReceiver, mP2pHelper.getIntentFilter());
     }
 
     @Override
@@ -45,7 +47,7 @@ public class MeetingNotesActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.discover_peers:
-                mHelper.discoverPeers();
+                mP2pHelper.discoverPeers();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

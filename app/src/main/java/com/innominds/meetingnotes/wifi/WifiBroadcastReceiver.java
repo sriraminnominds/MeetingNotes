@@ -1,4 +1,4 @@
-package com.innominds.meetingnotes;
+package com.innominds.meetingnotes.wifi;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -7,6 +7,8 @@ import android.net.NetworkInfo;
 import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.util.Log;
+
+import com.innominds.meetingnotes.MeetingNotesActivity;
 
 /**
  * Created by sgarimella on 04/10/17.
@@ -45,6 +47,7 @@ public class WifiBroadcastReceiver extends BroadcastReceiver {
             }
         } else if (WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION.equals(action)) {
             WifiP2pDevice device = (WifiP2pDevice) intent.getParcelableExtra(WifiP2pManager.EXTRA_WIFI_P2P_DEVICE);
+            mHelper.setThisDevice(device);
             Log.v(MeetingNotesActivity.TAG, " ::: " + device.deviceName);
         }
     }
